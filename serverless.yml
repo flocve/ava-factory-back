@@ -50,6 +50,13 @@ functions:
               - FactionsDynamoDbTable
               - StreamArn
           batchSize: 1
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - MembresDynamoDbTable
+              - StreamArn
+          batchSize: 1
 
 resources:
   Resources:
@@ -74,6 +81,22 @@ resources:
           DeletionPolicy: Retain
           Properties:
             TableName: 'factions'
+            AttributeDefinitions:
+              - AttributeName: id
+                AttributeType: S
+            KeySchema:
+              - AttributeName: id
+                KeyType: HASH
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+            StreamSpecification:
+              StreamViewType: NEW_AND_OLD_IMAGES
+    MembresDynamoDbTable:
+          Type: AWS::DynamoDB::Table
+          DeletionPolicy: Retain
+          Properties:
+            TableName: 'membres'
             AttributeDefinitions:
               - AttributeName: id
                 AttributeType: S
